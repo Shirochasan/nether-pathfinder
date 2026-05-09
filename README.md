@@ -1,4 +1,37 @@
 # Nether Pathfinder
+
+This is a clone of nether-pathfinder.  
+
+**Read-only / No Support**  
+
+*The differences from the original have been kept with git log. However, I am currently interested in AI and the metaverse, so I will not make any further updates or respond to questions.* The changed files from b5af910d164543fb7522f3cf61a5a57a6f373c2b are as follows:
+
+- README.md
+- java/build.gradle
+- java/build.gradle:Zone.Identifier
+- java/gradlew.bat:Zone.Identifier
+- java/gradlew:Zone.Identifier
+- java/multiplat_build.sh
+- java/multiplat_build.sh:Zone.Identifier
+- java/settings.gradle:Zone.Identifier
+- java/zigar.sh
+- java/zigar.sh:Zone.Identifier
+- java/zigcc.sh
+- java/zigcc.sh.bak
+- java/zigcc.sh.bak:Zone.Identifier
+- java/zigcc.sh:Zone.Identifier
+- java/zigcxx.sh
+- java/zigcxx.sh.bak
+- java/zigcxx.sh.bak:Zone.Identifier
+- java/zigcxx.sh:Zone.Identifier
+- java/zigranlib.sh
+- java/zigranlib.sh:Zone.Identifier
+- java/zigrc.sh
+- java/zigrc.sh:Zone.Identifier
+- src/PathFinder.cpp
+- src/PathFinder.cpp:Zone.Identifier
+
+
 High performance pathfinder for Minecraft's nether dimension, useful for travelling by elytra.
 
 This repo is the core library for pathfinding thus is not useful on its own. See [Baritone's elytra branch](https://github.com/cabaletta/baritone/tree/elytra) or [nether-pathfinder-mod](https://github.com/babbaj/nether-pathfinder-mod) for integration inside of a forge mod.
