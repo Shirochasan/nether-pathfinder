@@ -1,2 +1,2 @@
 #!/bin/sh
-zig ranlib $@
+exec zig ranlib "$@"

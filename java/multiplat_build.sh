@@ -10,16 +10,51 @@ function do_build {
     local output_path=$3
     echo "Building $target..."
 
-    CXXFLAGS="-target $target" cmake -G Ninja $java_root/.. \
+    local zig_cache_dir
+    zig_cache_dir=$(mktemp -d "$java_root/zigcache-$target.XXXXXX")
+    export ZIG_GLOBAL_CACHE_DIR="$zig_cache_dir"
+    export ZIG_LOCAL_CACHE_DIR="$zig_cache_dir"
+    export ZIG_TARGET="$target"
+    trap 'rm -rf "${zig_cache_dir}"' RETURN
+
+    local cmake_system_name=""
+    local cmake_system_processor=""
+    if [[ "$target" == *-windows-* ]]; then
+      cmake_system_name=Windows
+    elif [[ "$target" == *-macos-* ]]; then
+      cmake_system_name=Darwin
+    fi
+    if [[ "$target" == x86_64-* ]]; then
+      cmake_system_processor=x86_64
+    elif [[ "$target" == aarch64-* ]]; then
+      cmake_system_processor=aarch64
+    fi
+
+    local cmake_rc_compiler=""
+    if [[ "$target" == *-windows-* ]]; then
+      cmake_rc_compiler=$(realpath $java_root/zigrc.sh)
+    fi
+
+    cmake -G Ninja $java_root/.. \
       -DPATHFINDER_TARGET=$target \
       -DCMAKE_C_COMPILER=$(realpath $java_root/zigcc.sh) -DCMAKE_CXX_COMPILER=$(realpath $java_root/zigcxx.sh) \
       -DCMAKE_AR=$(realpath $java_root/zigar.sh) \
       -DCMAKE_RANLIB=$(realpath $java_root/zigranlib.sh) \
-      -DCMAKE_BUILD_TYPE=Release
+      ${cmake_rc_compiler:+-DCMAKE_RC_COMPILER=$cmake_rc_compiler} \
+      -DCMAKE_BUILD_TYPE=Release \
+      ${cmake_system_name:+-DCMAKE_SYSTEM_NAME=$cmake_system_name} \
+      ${cmake_system_processor:+-DCMAKE_SYSTEM_PROCESSOR=$cmake_system_processor}
 
-    ninja -j `nproc`
+    ninja -j "$(nproc)"
 
-    cp libnether_pathfinder.so ../$output_path
+    local built_library="libnether_pathfinder.so"
+    if [[ "$target" == *-macos-* ]]; then
+      built_library="libnether_pathfinder.dylib"
+    elif [[ "$target" == *-windows-* ]]; then
+      built_library="libnether_pathfinder.dll"
+    fi
+
+    cp "$built_library" ../$output_path
     popd
     rm -rf build
 }

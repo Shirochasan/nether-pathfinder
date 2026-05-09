@@ -1,2 +1,2 @@
 #!/bin/sh
-zig ar $@
+exec zig ar "$@"

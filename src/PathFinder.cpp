@@ -465,11 +465,24 @@ const Chunk& getChunkNoMutex(const BlockPos& pos, const ChunkGeneratorHell& gen,
 template<Size size>
 NodePos findAir(Context& ctx, const BlockPos& start1x) {
     auto start = NodePos{size, start1x};
+
+    if (!isInBounds(ctx.maxHeight, start1x)) {
+        std::cerr << "Start position out of bounds" << std::endl;
+        exit(1);
+    }
+
+    // For non-Nether dimensions, assume start position is air and return directly
+    // Overworld: top is mostly air, Nether: needs terrain generation check
+    // End: has no bedrock, top is air
+    if (ctx.dimension != Dimension::Nether) {
+        return start;
+    }
+
+    // For Nether, perform BFS to find air with generated terrain
     auto queue = std::queue<NodePos>{};
     auto visited = std::unordered_set<NodePos>{};
     queue.push(start);
     visited.insert(start);
-    if (!isInBounds(ctx.maxHeight, start1x)) goto retard;
 
     while (!queue.empty()) {
         const NodePos node = queue.front();
@@ -493,8 +506,7 @@ NodePos findAir(Context& ctx, const BlockPos& start1x) {
         }
     }
     // shouldn't be possible to exit the while loop
-    retard:
-    std::cerr << "retard" << std::endl;
+    std::cerr << "Failed to find air in Nether" << std::endl;
     exit(1);
 }
 
