@@ -20,4 +20,4 @@ done
   eval "set -- $args -- \"$last_arg\""
 fi
 
-exec /usr/local/bin/zig rc "$@"
+exec zig rc "$@"

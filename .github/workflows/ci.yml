@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# 同一PRで新しいコミットがあれば古いジョブをキャンセルする
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Build with Nix shell
+        run: nix develop --command bash -c "cd java && ./gradlew clean build --no-daemon -Porg.gradle.java.installations.auto-detect=false -Porg.gradle.java.installations.paths=\$JDK8_HOME,\$JDK21_HOME"
+        env:
+          # Nix経由で提供される特定のツールチェーンを利用する場合の環境変数
+          # 必要に応じて flake.nix 等で管理することを推奨します
+          CI: true
+
+      - name: Upload Build Artifact
+        if: ${{ !env.ACT }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-libs
+          path: java/build/libs/

@@ -13,13 +13,13 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup dependencies
-        uses: ./.github/actions/build-deps
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Make gradlew executable
         run: chmod +x java/gradlew
 
       - name: Run gradle build
-        run: |
-          cd java
-          nix develop --command ./gradlew build
+        run: nix develop --command bash -c "cd java && ./gradlew build --no-daemon -Porg.gradle.java.installations.auto-detect=false -Porg.gradle.java.installations.paths=\$JDK8_HOME,\$JDK21_HOME"

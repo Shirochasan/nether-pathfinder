@@ -13,4 +13,4 @@ if [ -n "$ZIG_TARGET" ]; then
     set -- -target "$ZIG_TARGET" "$@"
   fi
 fi
-exec /usr/local/bin/zig cc "$@"
+exec zig cc "$@"

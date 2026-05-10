@@ -12,7 +12,7 @@ import java.util.zip.ZipOutputStream
 buildscript {
     dependencies {
         classpath 'org.tukaani:xz:1.9'
-        classpath 'com.guardsquare:proguard-gradle:7.3.2'
+        classpath 'com.guardsquare:proguard-gradle:7.5.0'
     }
 }
 

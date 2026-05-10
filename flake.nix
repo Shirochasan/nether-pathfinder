@@ -4,34 +4,44 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    # Zigの最新開発版(0.17.0-dev等)を取得するためのオーバーレイ
+    zig-overlay.url = "github:mitchellh/zig-overlay";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, zig-overlay }:
       flake-utils.lib.eachDefaultSystem(system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ zig-overlay.overlays.default ];
+        };
+        # 現時点でNixpkgsで利用可能な最新のLLVMパッケージセット(19など)
+        llvmPkgs = pkgs.llvmPackages_19;
       in {
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             binutils-unwrapped-all-targets
-            clang_16
+            llvmPkgs.clang
             pkg-config
             cmake
             ninja
-            # zig 0.10.1 = segfault
-            # zig 0.9.1 only works on linux
-            # zig 0.11.0 only works on macos
-            # zig 0.13.0 fails for windows
-            zig_0_12
+            # ツールチェーン
+            pkgs.zigpkgs."master"
+            pkgs.jdk21
+            pkgs.openjdk8 # Gradleが要求しているバージョンを追加
           ];
           buildInputs = with pkgs; [
             gbenchmark
           ];
 
           shellHook = ''
-            export NIX_CFLAGS_COMPILE="-march=native"
-            export CC=${pkgs.clang_16}/bin/clang
-            export CXX=${pkgs.clang_16}/bin/clang++
+            export CC="clang"
+            export CXX="clang++"
+            # デフォルトは21にする
+            export JAVA_HOME=${pkgs.jdk21.home}
+            # Gradleが他のJDKを見つけられるようにパスを通す
+            export JDK8_HOME=${pkgs.openjdk8.home}
+            export JDK21_HOME=${pkgs.jdk21.home}
           '';
         };
       });
