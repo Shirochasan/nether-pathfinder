@@ -1,7 +1,7 @@
 name: Build Gradle project
 
 on:
-  push:
+  workflow_dispatch: # 手動実行のみにする（ci.ymlと重複するため）
 
 jobs:
   build:
@@ -13,10 +13,17 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup Java for Gradle Action
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
       - name: Install Nix
         uses: cachix/install-nix-action@v30
         with:
           nix_path: nixpkgs=channel:nixos-unstable
+          kvm: false
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4

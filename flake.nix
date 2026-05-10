@@ -38,10 +38,10 @@
             export CC="clang"
             export CXX="clang++"
             # デフォルトは21にする
-            export JAVA_HOME=${pkgs.jdk21.home}
+            export JAVA_HOME=${pkgs.jdk21}
             # Gradleが他のJDKを見つけられるようにパスを通す
-            export JDK8_HOME=${pkgs.openjdk8.home}
-            export JDK21_HOME=${pkgs.jdk21.home}
+            export JDK8_HOME=${pkgs.openjdk8}
+            export JDK21_HOME=${pkgs.jdk21}
           '';
         };
       });
