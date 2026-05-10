@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4.2.2 # バージョンを明示的に指定するとactが安定する場合がある
+        uses: actions/checkout@v6 # バージョンを明示的に指定するとactが安定する場合がある
         with:
           submodules: recursive
 
