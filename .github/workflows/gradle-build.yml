@@ -32,4 +32,4 @@ jobs:
         run: chmod +x java/gradlew
 
       - name: Run gradle build
-        run: nix develop --command bash -c "cd java && ./gradlew build --no-daemon -Porg.gradle.java.installations.auto-detect=false -Porg.gradle.java.installations.paths=\$JDK8_HOME,\$JDK21_HOME"
+        run: nix develop --command bash -c 'cd java && ./gradlew build --no-daemon -Porg.gradle.java.installations.auto-detect=true -Porg.gradle.java.installations.paths="$JDK8_HOME,$JDK21_HOME"'

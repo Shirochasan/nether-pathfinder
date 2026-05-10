@@ -37,11 +37,11 @@
           shellHook = ''
             export CC="clang"
             export CXX="clang++"
-            # デフォルトは21にする
-            export JAVA_HOME=${pkgs.jdk21}
-            # Gradleが他のJDKを見つけられるようにパスを通す
-            export JDK8_HOME=${pkgs.openjdk8}
-            export JDK21_HOME=${pkgs.jdk21}
+            # Gradle ToolchainとJNIが正しくパスを解決できるように設定
+            export JAVA_HOME="${pkgs.jdk21}"
+            export JDK8_HOME="${pkgs.openjdk8}"
+            export JDK21_HOME="${pkgs.jdk21}"
+            export NIX_CFLAGS_COMPILE="-I${pkgs.jdk21}/include -I${pkgs.jdk21}/include/linux $NIX_CFLAGS_COMPILE"
           '';
         };
       });
