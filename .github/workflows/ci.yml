@@ -53,7 +53,7 @@ jobs:
 
       - name: Publish to GitHub Packages
         if: github.event_name != 'pull_request' && !env.ACT
-        run: nix develop --command bash -c 'cd java && ./gradlew publish --no-daemon -Porg.gradle.java.installations.auto-detect=true -Porg.gradle.java.installations.paths="$JDK8_HOME,$JDK21_HOME"'
+        run: nix develop --command bash -c 'cd java && ./gradlew publishMavenPublicationToGithubPackagesRepository --no-daemon -Porg.gradle.java.installations.auto-detect=true -Porg.gradle.java.installations.paths="$JDK8_HOME,$JDK21_HOME"'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}

@@ -161,9 +161,11 @@ publishing {
 
     repositories {
         //mavenLocal()
-        maven {
-            name = "FileSystem"
-            url = uri("file://" + System.getenv("MAVEN_DIR"))
+        if (System.getenv("MAVEN_DIR") != null) {
+            maven {
+                name = "FileSystem"
+                url = uri("file://" + System.getenv("MAVEN_DIR"))
+            }
         }
         maven {
             name = "GithubPackages"
