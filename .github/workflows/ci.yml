@@ -11,6 +11,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,9 +35,9 @@ jobs:
           # 必要に応じて flake.nix 等で管理することを推奨します
           CI: true
 
-      - name: Upload Build Artifact
-        if: ${{ !env.ACT }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-libs
-          path: java/build/libs/
+      - name: Publish to GitHub Packages
+        if: github.event_name != 'pull_request' && !env.ACT
+        run: nix develop --command bash -c "cd java && ./gradlew publish --no-daemon -Porg.gradle.java.installations.auto-detect=false -Porg.gradle.java.installations.paths=\"$JDK8_HOME,$JDK21_HOME\""
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
