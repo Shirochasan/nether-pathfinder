@@ -40,7 +40,7 @@ jobs:
           kvm: false # act環境でのエラーログ抑制
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4.2.1
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-disabled: false # デフォルトで有効ですが明示
 
