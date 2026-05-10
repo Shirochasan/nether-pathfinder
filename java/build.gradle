@@ -23,7 +23,7 @@ plugins {
 }
 
 group = 'dev.babbaj'
-version = '1.6.2'
+version = '1.6.3'
 
 java {
     toolchain {
@@ -169,7 +169,7 @@ publishing {
         }
         maven {
             name = "GithubPackages"
-            url = new URI("https://maven.pkg.github.com/Babbaj/nether-pathfinder")
+            url = new URI("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY") ?: "Babbaj/nether-pathfinder"}")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
